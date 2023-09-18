@@ -44,7 +44,12 @@ func runCloudScrape(clArgs []string) {
 				} else {
 					names := extractNames(cert)
 					org := cert.Subject.Organization
-					fmt.Printf("Got SSL certificate from %s for organization %s: [%s]\n", ip, org, strings.Join(names, ", "))
+
+					if len(org) > 0 {
+						fmt.Printf("Got SSL certificate from %s for organization %s: [%s]\n", ip, org[0], strings.Join(names, ", "))
+					} else {
+						fmt.Printf("Got SSL certificate from %s for organization %s: [%s]\n", ip, "N/A", strings.Join(names, ", "))
+					}
 				}
 
 			}
