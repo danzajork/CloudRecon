@@ -30,8 +30,6 @@ type JsonOutput struct {
 func runCloudScrape(clArgs []string) {
 	args := parseScrapeCLI(clArgs)
 
-	enc := json.NewEncoder(os.Stdout)
-
 	dialer := &net.Dialer{
 		Timeout: time.Duration(args.Timeout) * time.Second,
 	}
@@ -64,9 +62,7 @@ func runCloudScrape(clArgs []string) {
 					b, err := json.Marshal(jo)
 
 					if err == nil {
-						if err := enc.Encode(b); err != nil {
-							// do nothing
-						}
+						fmt.Println(b)
 					}
 
 					/*if len(org) > 0 {
