@@ -22,9 +22,9 @@ type ScrapeArgs struct {
 }
 
 type JsonOutput struct {
-	OrgName  string
-	Ip       string
-	DnsNames []string
+	OrgName  string   `json:"organization"`
+	Ip       string   `json:"ip"`
+	DnsNames []string `json:"dns_names"`
 }
 
 func runCloudScrape(clArgs []string) {
@@ -62,7 +62,7 @@ func runCloudScrape(clArgs []string) {
 					b, err := json.Marshal(jo)
 
 					if err == nil {
-						fmt.Println(b)
+						fmt.Println(string(b))
 					}
 
 					/*if len(org) > 0 {
