@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"net"
@@ -20,8 +21,16 @@ type ScrapeArgs struct {
 	AllOutput   bool
 }
 
+type JsonOutput struct {
+	OrgName  string
+	Ip       string
+	DnsNames []string
+}
+
 func runCloudScrape(clArgs []string) {
 	args := parseScrapeCLI(clArgs)
+
+	enc := json.NewEncoder(os.Stdout)
 
 	dialer := &net.Dialer{
 		Timeout: time.Duration(args.Timeout) * time.Second,
@@ -43,13 +52,28 @@ func runCloudScrape(clArgs []string) {
 					continue
 				} else {
 					names := extractNames(cert)
-					org := cert.Subject.Organization
+					var org string
+					if len(cert.Subject.Organization) > 0 {
+						org = cert.Subject.Organization[0]
+					} else {
+						org = "N/A"
+					}
 
-					if len(org) > 0 {
+					jo := JsonOutput{org, ip, names}
+
+					b, err := json.Marshal(jo)
+
+					if err == nil {
+						if err := enc.Encode(&b); err != nil {
+							// do nothing
+						}
+					}
+
+					/*if len(org) > 0 {
 						fmt.Printf("Got SSL certificate from %s for organization %s: [%s]\n", ip, org[0], strings.Join(names, ", "))
 					} else {
 						fmt.Printf("Got SSL certificate from %s for organization %s: [%s]\n", ip, "N/A", strings.Join(names, ", "))
-					}
+					}*/
 				}
 
 			}
