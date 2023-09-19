@@ -64,7 +64,7 @@ func runCloudScrape(clArgs []string) {
 					b, err := json.Marshal(jo)
 
 					if err == nil {
-						if err := enc.Encode(&b); err != nil {
+						if err := enc.Encode(b); err != nil {
 							// do nothing
 						}
 					}
